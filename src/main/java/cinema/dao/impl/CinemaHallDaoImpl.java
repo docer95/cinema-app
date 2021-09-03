@@ -1,43 +1,25 @@
 package cinema.dao.impl;
 
+import cinema.dao.AbstractDao;
 import cinema.dao.CinemaHallDao;
 import cinema.exception.DataProcessingException;
-import cinema.lib.Dao;
 import cinema.model.CinemaHall;
-import cinema.util.HibernateUtil;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 
-@Dao
-public class CinemaHallDaoImpl implements CinemaHallDao {
-    @Override
-    public CinemaHall add(CinemaHall cinemaHall) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-            session.save(cinemaHall);
-            transaction.commit();
-            return cinemaHall;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert cinema hall: " + cinemaHall, e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+@Repository
+public class CinemaHallDaoImpl extends AbstractDao<CinemaHall> implements CinemaHallDao {
+    public CinemaHallDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
     public Optional<CinemaHall> get(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return Optional.ofNullable(session.get(CinemaHall.class, id));
         } catch (Exception e) {
             throw new DataProcessingException("Can't get a cinema hall by id: " + id, e);
@@ -46,7 +28,7 @@ public class CinemaHallDaoImpl implements CinemaHallDao {
 
     @Override
     public List<CinemaHall> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             CriteriaQuery<CinemaHall> criteriaQuery = session.getCriteriaBuilder()
                     .createQuery(CinemaHall.class);
             criteriaQuery.from(CinemaHall.class);

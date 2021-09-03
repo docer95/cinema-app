@@ -4,9 +4,7 @@ import cinema.model.CinemaHall;
 import java.util.List;
 import java.util.Optional;
 
-public interface CinemaHallDao {
-    CinemaHall add(CinemaHall cinemaHall);
-
+public interface CinemaHallDao extends GenericDao<CinemaHall> {
     Optional<CinemaHall> get(Long id);
 
     List<CinemaHall> getAll();
