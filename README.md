@@ -15,8 +15,8 @@ of the user to register and buy a ticket for a particular movie session of inter
 1. Download and install IntelliJ IDEA Ultimate
 2. Download and install MySQL
 3. Download and install Tomcat
-4. Turn this project
-5. In this project, open the file that is located at the address taxi-service/src/main/resources/db.properties 
+4. Open this project
+5. In this project, open the file that is located at the address cinema/src/main/resources/db.properties 
    and change fields (db.url - address behind which your database, db.user - your login,
    db.password - your password, db.driver - path for JDBC driver)
 6. Add Configurations -> add new run configuration... -> Tomcat Server -> Local.
