@@ -1,46 +1,36 @@
 package cinema.dao.impl;
 
+import cinema.dao.AbstractDao;
 import cinema.dao.UserDao;
-import cinema.exception.DataProcessingException;
-import cinema.lib.Dao;
 import cinema.model.User;
-import cinema.util.HibernateUtil;
 import java.util.Optional;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
-@Dao
-public class UserDaoImpl implements UserDao {
-    @Override
-    public User add(User user) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-            session.save(user);
-            transaction.commit();
-            return user;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new DataProcessingException("Can't insert to DB user: "
-                    + user, e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+@Repository
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
+    public UserDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("FROM User u "
                     + "WHERE u.email = :email", User.class);
             query.setParameter("email", email);
+            return query.uniqueResultOptional();
+        }
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("FROM User u "
+                    + "WHERE u.id = :id", User.class);
+            query.setParameter("id", id);
             return query.uniqueResultOptional();
         }
     }

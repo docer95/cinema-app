@@ -5,10 +5,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface MovieSessionDao {
+public interface MovieSessionDao extends GenericDao<MovieSession> {
     List<MovieSession> findAvailableSessions(Long movieId, LocalDate date);
 
     Optional<MovieSession> get(Long id);
 
-    MovieSession add(MovieSession session);
+    MovieSession update(MovieSession movieSession);
+
+    boolean remove(Long id);
 }
